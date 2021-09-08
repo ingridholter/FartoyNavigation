@@ -110,6 +110,7 @@ legend('\phi', '\theta', '\psi','\phi_d', '\theta_d', '\psi_d');
 title('Euler angles');
 xlabel('time [s]'); 
 ylabel('angle [deg]');
+saveas(gcf,'EulerAngles1_6.pdf')
 
 figure (2); clf;
 hold on;
@@ -122,6 +123,7 @@ legend('p', 'q', 'r');
 title('Angular velocities');
 xlabel('time [s]'); 
 ylabel('angular rate [deg/s]');
+saveas(gcf,'EulerVelocities1_6.pdf')
 
 figure (3); clf;
 hold on;
@@ -134,3 +136,4 @@ legend('x', 'y', 'z');
 title('Control input');
 xlabel('time [s]'); 
 ylabel('input [Nm]'); 
+saveas(gcf,'ControlInput1_6.pdf')
