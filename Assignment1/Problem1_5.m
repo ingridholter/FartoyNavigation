@@ -103,7 +103,7 @@ legend('\phi_{error}', '\theta_{error}', '\psi_{error}');
 title('Error in Euler Angles');
 xlabel('time [s]'); 
 ylabel('Error [deg]');
-saveas(gcf,'Error1_5.pdf')
+saveas(gcf,'./figures/Error1_5.pdf')
 
 figure (1); clf;
 hold on;
@@ -119,7 +119,7 @@ legend('\phi', '\theta', '\psi','\phi_d', '\theta_d', '\psi_d');
 title('Euler angles');
 xlabel('time [s]'); 
 ylabel('angle [deg]');
-saveas(gcf,'EulerAngles1_5.pdf')
+saveas(gcf,'./figures/EulerAngles1_5.pdf')
 
 figure (2); clf;
 hold on;
@@ -132,7 +132,7 @@ legend('p', 'q', 'r');
 title('Angular velocities');
 xlabel('time [s]'); 
 ylabel('angular rate [deg/s]');
-saveas(gcf,'EulerVelocities1_5.pdf')
+saveas(gcf,'./figures/EulerVelocities1_5.pdf')
 
 figure (3); clf;
 hold on;
@@ -145,4 +145,4 @@ legend('x', 'y', 'z');
 title('Control input');
 xlabel('time [s]'); 
 ylabel('input [Nm]');
-saveas(gcf,'ControlInput1_5.pdf')
+saveas(gcf,'./figures/ControlInput1_5.pdf')
