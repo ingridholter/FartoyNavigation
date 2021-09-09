@@ -21,7 +21,7 @@
 
 %% USER INPUTS
 h = 0.1;                     % sample time (s)
-N  = 400;                    % number of samples. Should be adjusted
+N  = 2500;                    % number of samples. Should be adjusted
 
 % model parameters
 m = 180;
@@ -88,6 +88,22 @@ phi_d = rad2deg*table(:,15);
 theta_d = rad2deg*table(:,16);
 psi_d = rad2deg*table(:,17);
 
+e_phi = phi-phi_d;
+e_theta = theta-theta_d;
+e_psi = psi-psi_d;
+
+figure (4); clf;
+hold on;
+plot(t, e_phi, 'b');
+plot(t, e_theta, 'r');
+plot(t, e_psi, 'g');
+hold off;
+grid on;
+legend('\phi_{error}', '\theta_{error}', '\psi_{error}');
+title('Error in Euler Angles');
+xlabel('time [s]'); 
+ylabel('Error [deg]');
+saveas(gcf,'Error1_5.pdf')
 
 figure (1); clf;
 hold on;
