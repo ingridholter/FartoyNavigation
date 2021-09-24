@@ -9,22 +9,22 @@ chi = m.measurements(3,:);
 delta_a = m.measurements(4,:);
 
 figure(1)
-plot(t,chi_ref);
+plot(t,chi_ref,'b');
 hold on
-plot(t,chi);
+plot(t,chi,'r');
 grid on;
 legend('\chi','\chi_{ref}');
-title('Chi');
+title('Course');
 xlabel('time [s]'); 
-ylabel('?'); 
+ylabel('Course '); 
 saveas(gcf,'./figures/chi.pdf')
 hold off
 
 figure(2)
 plot(t,delta_a);
 grid on;
-legend('delta');
+legend('\delta_a');
 title('Aileron');
 xlabel('time [s]'); 
-ylabel('?'); 
+ylabel(''); 
 saveas(gcf,'./figures/aileron.pdf')

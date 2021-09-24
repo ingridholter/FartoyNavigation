@@ -3,6 +3,8 @@
 a_phi1 = 2.87;
 a_phi2= -0.65;
 
+deg2rad = pi/180;
+rad2deg= 180/pi;
 
 g= 9.81;
 V_g = 580;
@@ -22,13 +24,12 @@ k_pchi= (2*zeta_chi*omega_nchi*V_g)/g;
 
 k_ichi = (omega_nchi^2*V_g)/g;
 
-d= 1;
+d= 1.5*deg2rad;
 
 %% timeseries
-deg2rad = pi/180;
 h=30;
-chi_ref = [0*ones(1,h) 10*ones(1,h) 15*ones(1,h) 20*ones(1,h) 5*ones(1,h) -10*ones(1,h)].*deg2rad;
-
+%chi_ref = [0*ones(1,h) 10*ones(1,h) 15*ones(1,h) 20*ones(1,h) 5*ones(1,h) -10*ones(1,h)].*deg2rad;
+chi_ref = [0*ones(1,h) 10*ones(1,h) 10*ones(1,h) 10*ones(1,h) 0*ones(1,h) 0*ones(1,h)].*deg2rad;
 T=h*6;
 time_steps = [1:1:T]';
 chi_c_ts = timeseries(chi_ref, time_steps);
@@ -43,7 +44,7 @@ sys = tf([a_phi2],[1 (a_phi1+a_phi2*k_dphi) k_pphi*a_phi2 0]);
 rlocus(sys,k);
 %}
 
-%% f
+%% 2f
 
 A = [-0.322 0.052 0.028 -1.12 0.002;
      0 0 1 -0.001 0;
@@ -57,4 +58,6 @@ C = [1 0 0 0 0;
     0 1 0 0 0;
     0 0 1 0 0;
     0 0 0 1 0];
+
+D = zeros(4,1);
 
