@@ -7,6 +7,7 @@ t = m.measurements(1,:);
 chi_ref = m.measurements(2,:);
 chi = m.measurements(3,:);
 delta_a = m.measurements(4,:);
+delta_a_u = m.measurements(5,:);
 
 figure(1)
 plot(t,chi_ref,'b');
@@ -22,8 +23,10 @@ hold off
 
 figure(2)
 plot(t,delta_a);
+hold on
+plot(t,delta_a_u);
 grid on;
-legend('\delta_a');
+legend('\delta_a saturated','\delta_a');
 title('Aileron deflection');
 xlabel('time [s]'); 
 ylabel('Aileron deflection [deg]'); 
