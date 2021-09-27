@@ -1,7 +1,7 @@
+%% plot 2f
 
-%% plots for 2e
 
-m = load('measurements_2e.mat');
+m = load('measurements_2f.mat');
 
 t = m.measurements(1,:);
 chi_ref = m.measurements(2,:);
@@ -16,15 +16,15 @@ grid on;
 legend('\chi','\chi_{ref}');
 title('Course');
 xlabel('time [s]'); 
-ylabel('Course [deg]'); 
-saveas(gcf,'./figures/chi.pdf')
+ylabel('Course '); 
+saveas(gcf,'./figures/2f_chi.pdf')
 hold off
 
 figure(2)
 plot(t,delta_a);
 grid on;
 legend('\delta_a');
-title('Aileron deflection');
+title('Aileron');
 xlabel('time [s]'); 
-ylabel('Aileron deflection [deg]'); 
-saveas(gcf,'./figures/aileron.pdf')
+ylabel(''); 
+saveas(gcf,'./figures/2f_aileron.pdf')
