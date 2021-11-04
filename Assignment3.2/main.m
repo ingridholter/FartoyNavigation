@@ -11,9 +11,9 @@ Ns = 10000;    % no. of samples
 
 xd = [0 0 0]';
 %psi_ref = 10*pi/180;
-psi_ref = zeros(Ns+1,1)
-psi_ref(1:Ns/2,1) = 10*pi/180;    % desired yaw angle (rad)
-psi_ref(Ns/2+1:end,1) = -20*pi/180
+psi_ref = zeros(Ns+1,1); % desired yaw angle (rad)
+psi_ref(1:Ns/2,1) = 10*pi/180;    
+psi_ref(Ns/2+1:end,1) = -20*pi/180;
 U_ref   = 7;            % desired surge speed (m/s)
 V_c = 1;                % current velocity (m/s)
 beta_Vc = 45 * pi/180;  % current direction in NED (rad)

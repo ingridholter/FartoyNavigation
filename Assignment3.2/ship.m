@@ -146,13 +146,6 @@ tau = Bi(nu_r(1),delta) * u;
 nu_dot = [nu(3)*vc -nu(3)*uc 0]' + Minv * (tau_ext + tau - (CRB + CA + D) * nu_r - d);
 eta_dot = R * nu;   
 
-%Nomoto model variables
-K = 6.146*10.^(-6) /0.0008203;
-T1 = 6.89938600820852024;
-T2 = 176.69198300312879537;
-T3 = T1*T2/K*8.638*10.^(-5);
-T = T1+T2-T3;
-
 % Rudder saturation and dynamics (Sections 9.5.2)
 if abs(delta_c) >= delta_max
     delta_c = sign(delta_c)*delta_max;

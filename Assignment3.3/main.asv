@@ -97,6 +97,8 @@ for i=1:Ns+1
     
     % store simulation data in a table (for testing)
     simdata(i,:) = [t x(1:3)' x(4:6)' x(7) x(8) u(1) u(2) u_d psi_d r_d];
+        simdata(i,:) = [t x(1:3)' x(4:6)' x(7) x(8) u(1) u(2) u_d psi_d r_d];     
+
  
     % Euler integration
     x = euler2(xdot,x,h);
@@ -132,8 +134,7 @@ subplot(311)
 plot(y,x,'linewidth',2); axis('equal')
 title('North-East positions (m)'); xlabel('(m)'); ylabel('(m)'); 
 subplot(312)
-psi_ref_vec = psi_ref*ones(Ns + 1, 1);
-plot(t,psi,t,psi_d,t,psi_ref_vec*(180/pi),'linewidth',2);
+plot(t,psi,t,psi_d,t,psi_ref*(180/pi),'linewidth',2);
 title('Actual and desired yaw angles (deg)'); xlabel('time (s)');
 legend('Actual', 'Desired', 'Referance');
 subplot(313)
