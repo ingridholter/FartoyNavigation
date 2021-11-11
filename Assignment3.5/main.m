@@ -27,7 +27,7 @@ L = 161;                % Length of ship
 A_Lw = 10*L;
 
 % initial states
-eta = [0 0 0]';
+eta = [0 0 deg2rad(-110)]';
 nu  = [0.1 0 0]';
 delta = 0;
 n = 0;
@@ -36,12 +36,12 @@ x = [nu' eta' delta n Q_m]';
 
 % KF Initialization
 x0= [0, 0, 0]';
-P0 = [deg2rad(0.001), 0, 0;
+P0 = [deg2rad(110), 0, 0;
       0, deg2rad(0.001), 0;
       0, 0, deg2rad(0.01)];
 x_prd = x0;
 P_prd = P0;
-Qd = [deg2rad(0.001), 0;
+Qd = [deg2rad(0.2), 0;
       0, deg2rad(0.001)];
 Rd = deg2rad(0.5);
 
