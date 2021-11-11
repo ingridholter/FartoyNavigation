@@ -6,12 +6,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % USER INPUTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear all;
+close all;
 load('WP.mat');
 h  = 0.1;    % sampling time [s]
 Ns = 70000;    % no. of samples
 
 xd = [0 0 0]';
-psi_ref = -110*pi/180;
+psi_inital = -110*pi/180;
 % psi_ref = zeros(Ns+1,1); % desired yaw angle (rad)
 % psi_ref(1:Ns/2,1) = 10*pi/180;    
 % psi_ref(Ns/2+1:end,1) = -20*pi/180;
@@ -28,7 +30,7 @@ L = 161;                % Length of ship
 A_Lw = 10*L;
 
 % initial states
-eta = [0 0 0]';
+eta = [0 0 psi_inital]';
 nu  = [0.1 0 0]';
 delta = 0;
 n = 0;
@@ -45,10 +47,10 @@ for i=1:Ns+1
     t = (i-1) * h;              % time (s)
     
     % current disturbance
-%     uc = V_c * cos(beta_Vc - x(6));
-    uc = 0;
-%     vc = V_c * sin(beta_Vc -x(6));
-    vc = 0;
+    uc = V_c * cos(beta_Vc - x(6));
+    %uc = 0;
+    vc = V_c * sin(beta_Vc -x(6));
+    %vc = 0;
     nu_c = [ uc vc 0 ]';
     
     % wind disturbance
@@ -60,13 +62,16 @@ for i=1:Ns+1
     
     nu_r(i,1) = x(1)-uc;
     nu_r(i,2) = x(2)-vc;
-    if i~=1
-        psi_ref = guidance(x(4),x(5),WP);
-    end
-    
+   
+    %psi_ref = guidance(x(4),x(5),WP);
+       
+    psi_ref = ILOS(x(4),x(5),WP,h);
+        
+   
+
     
     % reference models
-    omega_ref = 0.03;
+    omega_ref = 0.06;
     Ad = [0 1 0;
           0 0 1;
           -omega_ref^3 -3*omega_ref^2   -3*omega_ref];
@@ -81,7 +86,7 @@ for i=1:Ns+1
         
     % control law
     delta_c = PID_heading(x(6),psi_d,x(3), r_d,i,h); % rudder angle command (rad)
-%     delta_c = 0.1;              
+%   delta_c = 0.1;              
     
     m = 17.0677e6;
     Xudot = -8.9830e5;
