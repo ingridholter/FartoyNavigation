@@ -6,11 +6,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % USER INPUTS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+clear all;
+close all;
+load('WP.mat');
 h  = 0.1;    % sampling time [s]
-Ns = 10000;    % no. of samples
+Ns = 70000;    % no. of samples
 
 xd = [0 0 0]';
-psi_ref = 10*pi/180;
+psi_inital = -110*pi/180;
 % psi_ref = zeros(Ns+1,1); % desired yaw angle (rad)
 % psi_ref(1:Ns/2,1) = 10*pi/180;    
 % psi_ref(Ns/2+1:end,1) = -20*pi/180;
@@ -27,7 +30,7 @@ L = 161;                % Length of ship
 A_Lw = 10*L;
 
 % initial states
-eta = [0 0 deg2rad(-110)]';
+eta = [0 0 psi_inital]';
 nu  = [0.1 0 0]';
 delta = 0;
 n = 0;
@@ -43,7 +46,7 @@ x_prd = x0;
 P_prd = P0;
 Qd = [deg2rad(0.2), 0;
       0, deg2rad(0.001)];
-Rd = deg2rad(0.5);
+Rd = deg2rad(2);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MAIN LOOP
@@ -56,9 +59,9 @@ for i=1:Ns+1
     
     % current disturbance
     uc = V_c * cos(beta_Vc - x(6));
-%     uc = 0;
+    %uc = 0;
     vc = V_c * sin(beta_Vc -x(6));
-%     vc = 0;
+    %vc = 0;
     nu_c = [ uc vc 0 ]';
     
     % wind disturbance
@@ -70,9 +73,14 @@ for i=1:Ns+1
     
     nu_r(i,1) = x(1)-uc;
     nu_r(i,2) = x(2)-vc;
+   
+    %psi_ref = guidance(x(4),x(5),WP);
+       
+    psi_ref = ILOS(x(4),x(5),WP,h);
+
     
     % reference models
-    omega_ref = 0.03;
+    omega_ref = 0.06;
     Ad = [0 1 0;
           0 0 1;
           -omega_ref^3 -3*omega_ref^2   -3*omega_ref];
@@ -86,8 +94,17 @@ for i=1:Ns+1
     u_d = U_ref;
         
     % control law
-    delta_c = PID_heading(x(6),psi_d,x(3), r_d,i,h); % rudder angle command (rad)
-%     delta_c = 0.1;              
+%     psi_noise = x(6) + normrnd(0, deg2rad(0.5));
+%     r_noise = x(6) + normrnd(0, deg2rad(0.1));
+    if i == 1
+        psi_hat = x_prd(1);
+        r_hat = x_prd(2);
+    else
+        psi_hat = x_hat(1);
+        r_hat = x_hat(2);
+    end
+    delta_c = PID_heading(psi_hat,psi_d,r_hat, r_d,i,h); % rudder angle command (rad)
+%   delta_c = 0.1;              
     
     m = 17.0677e6;
     Xudot = -8.9830e5;
@@ -105,7 +122,8 @@ for i=1:Ns+1
     % ship dynamics
     u = [delta_c n_c]';
     [xdot,u] = ship(x,u,nu_c,tau_wind);
- 
+    
+
     % Euler integration
     x = euler2(xdot,x,h);
     xd = euler2(xd_dot,xd,h);
@@ -161,10 +179,12 @@ x_hat   = rad2deg(simdata(:,15:end));
 u_r     = nu_r(:,1);
 v_r     = nu_r(:,2);
 U_r     = sqrt(v_r(:).^2 + u_r(:).^2);
-beta_u    = atan2(v_r, U_r)*180/pi;
+% beta_u    = atan2(v_r, U_r)*180/pi;
+beta_c    = atan2(v_r, U_r)*180/pi;
+% beta_crab_u = atan2(v,u)*180/pi;
+beta_crab_c = atan2(v,u)*180/pi;
 % r_noise = r + normrnd(0, 0.1, size(r));
 % psi_noise = psi + normrnd(0, 0.5, size(psi));
-
 
 
 figure(1)
@@ -173,10 +193,9 @@ subplot(311)
 plot(y,x,'linewidth',2); axis('equal')
 title('North-East positions (m)'); xlabel('(m)'); ylabel('(m)'); 
 subplot(312)
-psi_ref_vec = psi_ref*ones(Ns + 1, 1);
-plot(t,psi,t,psi_d,t,psi_ref_vec*(180/pi),'linewidth',2);
+plot(t,psi,t,psi_d,'linewidth',2);
 title('Actual and desired yaw angles (deg)'); xlabel('time (s)');
-legend('Actual', 'Desired', 'Referance');
+legend('Actual', 'Desired');
 subplot(313)
 plot(t,r,t,r_d,'linewidth',2);
 title('Actual and desired yaw rates (deg/s)'); xlabel('time (s)');
@@ -197,12 +216,21 @@ plot(t,delta,t,delta_c,'linewidth',2);
 title('Actual and commanded rudder angles (deg)'); xlabel('time (s)');
 legend('Actual', 'Desired');
 
-% figure(3)
-% plot(t,beta_u,t,beta_u0, 'LineWidth',2);
+pathplotter(x,y);
+
+% figure(4)
+% subplot(211)
+% plot(t,beta_u,t,beta_c, 'LineWidth',2);
 % title('Beta values');
 % xlabel('time (s)'); ylabel('Degrees');
-% legend('Beta with current', 'Beta without current');
-
+% legend('Beta with current','Beta without current');
+% 
+% subplot(212)
+% plot(t,beta_crab_u,t, beta_crab_c, 'LineWidth',2);
+% title('Crab angle in degrees');
+% xlabel('time (s)'); ylabel('Degrees');
+% legend('Crab angle with current', 'Crab angle without current');
+% % 
 % figure(4)
 % plot(t,u_r, 'LineWidth',2);
 % title('u_r values');
@@ -234,3 +262,4 @@ subplot(313)
 plot(t,x_hat(:,3),'linewidth',2);
 title('Bias estimate from KF (deg)'); xlabel('time (s)');
 legend('Estimate');
+
